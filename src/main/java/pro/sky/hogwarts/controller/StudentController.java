@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pro.sky.hogwarts.dto.*;
+import pro.sky.hogwarts.entity.*;
 import pro.sky.hogwarts.service.*;
 
 import java.util.List;
@@ -21,44 +21,38 @@ public class StudentController {
     }
 
     @PostMapping
-    public StudentDtoOut create(@RequestBody StudentDtoIn studentDtoIn) {
-        return studentService.create(studentDtoIn);
-    }
-
-    @PutMapping("/{id}")
-    public StudentDtoOut update(@PathVariable("id") long id, @RequestBody StudentDtoIn studentDtoIn) {
-        return studentService.update(id, studentDtoIn);
+    public Student createStudent(@RequestBody Student student) {
+        return studentService.createStudent(student);
     }
 
     @GetMapping("/{id}")
-    public StudentDtoOut get(@PathVariable("id") long id) {
-        return studentService.get(id);
+    public Student getStudentById(@PathVariable("id") long id) {
+        return studentService.getStudentById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Student updateStudent(@PathVariable("id") long id, @RequestBody Student student) {
+        return studentService.updateStudent(id, student);
     }
 
     @DeleteMapping("/{id}")
-    public StudentDtoOut delete(@PathVariable("id") long id) {
-        return studentService.delete(id);
+    public Student deleteStudent(@PathVariable("id") long id) {
+        return studentService.deleteStudent(id);
     }
 
     @GetMapping
-    public List<StudentDtoOut> findAll(@RequestParam(required = false) Integer age) {
-        return studentService.findAll(age);
+    public List<Student> findAllStudentsByAge(@RequestParam(required = false) Integer age) {
+        return studentService.findAllStudentsByAge(age);
     }
 
     @GetMapping("/filter")
-    public List<StudentDtoOut> findByAgeBetween(@RequestParam int ageFrom, @RequestParam int ageTo) {
-        return studentService.findByAgeBetween(ageFrom, ageTo);
-    }
-
-    @GetMapping("/{id}/faculty")
-    public FacultyDtoOut findFaculty(@PathVariable("id") long id) {
-        return studentService.findFaculty(id);
+    public List<Student> findStudentsByAgeBetween(@RequestParam int ageFrom, @RequestParam int ageTo) {
+        return studentService.findStudentsByAgeBetween(ageFrom, ageTo);
     }
 
     @PatchMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-        public StudentDtoOut uploadAvatar(@PathVariable("id") long id,
-                                          @RequestPart("avatar") MultipartFile multipartFile){
-        return studentService.uploadAvatar(id, multipartFile);
+    public Student uploadAvatar(@PathVariable("id") long id, @RequestPart("avatar") MultipartFile multipartFile) {
+        return studentService.uploadAvatarToStudent(id, multipartFile);
     }
-
+    //Commit-3
 }

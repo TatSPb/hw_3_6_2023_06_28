@@ -3,16 +3,12 @@ package pro.sky.hogwarts.controller;
 import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pro.sky.hogwarts.service.*;
 
 @RestController
 @RequestMapping("/avatars")
 public class AvatarController {
-
     private final AvatarService avatarService;
 
     public AvatarController(AvatarService avatarService) {
@@ -20,16 +16,16 @@ public class AvatarController {
     }
 
     @GetMapping("/{id}/from-db")
-    public ResponseEntity<byte[]> getFromDb(@PathVariable long id){
+    public ResponseEntity<byte[]> getFromDb(@PathVariable long id) {
         return build(avatarService.getFromDb(id));
     }
 
     @GetMapping("/{id}/from-fs")
-    public ResponseEntity<byte[]> getFromFs(@PathVariable long id){
+    public ResponseEntity<byte[]> getFromFs(@PathVariable long id) {
         return build(avatarService.getFromFs(id));
     }
 
-    private ResponseEntity<byte[]> build(Pair<byte[], String> pair){
+    private ResponseEntity<byte[]> build(Pair<byte[], String> pair) {
         byte[] data = pair.getFirst();
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(pair.getSecond()))
