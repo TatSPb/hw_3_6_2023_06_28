@@ -94,4 +94,5 @@ public class StudentService {
         student.setAvatarUrl("http://localhost:8088/avatars/" + avatar.getId() + "/from-db");
         return student;
     }
+    //Commit-3
 }

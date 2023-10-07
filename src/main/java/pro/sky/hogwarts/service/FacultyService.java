@@ -57,10 +57,10 @@ public class FacultyService {
                 .orElseGet(facultyRepository::findAll));
     }
 
-
     public List<Faculty> findFacultyByColorOrName(String colorOrName) {
         return new ArrayList<>(
                 facultyRepository.findByColorContainingIgnoreCaseOrNameContainingIgnoreCase(colorOrName, colorOrName));
     }
+    //Commit-3
 
 }

@@ -227,4 +227,5 @@ public class FacultyControllerTest_Rest {
         generatedFaculty.setColor(faker.color().name());
         return generatedFaculty;
     }
+    //Commit-3
 }

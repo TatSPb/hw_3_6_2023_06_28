@@ -54,4 +54,5 @@ public class StudentController {
     public Student uploadAvatar(@PathVariable("id") long id, @RequestPart("avatar") MultipartFile multipartFile) {
         return studentService.uploadAvatarToStudent(id, multipartFile);
     }
+    //Commit-3
 }
