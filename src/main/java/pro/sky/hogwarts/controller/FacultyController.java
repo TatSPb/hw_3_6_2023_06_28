@@ -2,10 +2,9 @@ package pro.sky.hogwarts.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import pro.sky.hogwarts.dto.FacultyDtoIn;
-import pro.sky.hogwarts.dto.FacultyDtoOut;
-import pro.sky.hogwarts.dto.StudentDtoOut;
-import pro.sky.hogwarts.service.FacultyService;
+
+import pro.sky.hogwarts.entity.*;
+import pro.sky.hogwarts.service.*;
 
 import java.util.List;
 
@@ -21,36 +20,33 @@ public class FacultyController {
     }
 
     @PostMapping
-    public FacultyDtoOut create(@RequestBody FacultyDtoIn facultyDtoIn) {
-        return facultyService.create(facultyDtoIn);
+    public Faculty createFaculty(@RequestBody Faculty faculty) {
+        return facultyService.createFaculty(faculty);
     }
 
     @PutMapping("/{id}")
-    public FacultyDtoOut update(@PathVariable("id") long id, @RequestBody FacultyDtoIn facultyDtoIn) {
-        return facultyService.update(id, facultyDtoIn);
+    public Faculty updateFaculty(@PathVariable("id") long id, @RequestBody Faculty faculty) {
+        return facultyService.updateFaculty(id, faculty);
     }
 
     @GetMapping("/{id}")
-    public FacultyDtoOut get(@PathVariable("id") long id) {
-        return facultyService.get(id);
+    public Faculty getFacultyById(@PathVariable("id") long id) {
+        return facultyService.getFacultyById(id);
     }
 
     @DeleteMapping("/{id}")
-    public FacultyDtoOut delete(@PathVariable("id") long id) {
-        return facultyService.delete(id);
+    public Faculty deleteFaculty(@PathVariable("id") long id) {
+        return facultyService.deleteFaculty(id);
     }
 
     @GetMapping
-    public List<FacultyDtoOut> findAll(@RequestParam(required = false) String color) {
-        return facultyService.findAll(color);
+    public List<Faculty> findAllFacultyOrByColor(@RequestParam(required = false) String color) {
+        return facultyService.findFacultyByColor(color);
     }
     @GetMapping("/filter")
-    public List<FacultyDtoOut> findByColorOrName(@RequestParam String colorOrName) {
-        return facultyService.findByColorOrName(colorOrName);
+    public List<Faculty> findFacultyByColorOrName(@RequestParam String colorOrName) {
+        return facultyService.findFacultyByColorOrName(colorOrName);
     }
 
-    @GetMapping("/{id}/students")
-    public List<StudentDtoOut> findStudents(@PathVariable("id") long id){
-        return facultyService.findStudents(id);
-    }
+
 }
