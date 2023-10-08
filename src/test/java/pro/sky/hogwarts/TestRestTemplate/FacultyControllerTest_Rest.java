@@ -143,13 +143,24 @@ public class FacultyControllerTest_Rest {
         String url = "http://localhost:" + port + "/faculties/{id}";
         this.testRestTemplate.delete(url, 1);
     }
-
     @Test
     public void deleteFacultyTest2() {
         Faculty facultyIn = new Faculty(1L, "fac-1", "green");
         facultyRepository.save(facultyIn);
         facultyRepository.findById(1L);
         String url = "http://localhost:" + port + "/faculties/{id}";
+
+        //на всякий случай проверили, что полученный объект соответствует отправленному
+        Faculty facultyOut = testRestTemplate.getForObject(
+                "http://localhost:" + port + "/faculties/" + facultyIn.getId(),
+                Faculty.class,
+                facultyIn.getId()
+        );
+        assertThat(facultyOut.getId()).isNotEqualTo(0L);
+        assertThat(facultyOut.getName()).isEqualTo(facultyIn.getName());
+        assertThat(facultyOut.getColor()).isEqualTo(facultyIn.getColor());
+
+        //удалили объект
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(
                 url,
                 HttpMethod.DELETE,
@@ -157,8 +168,12 @@ public class FacultyControllerTest_Rest {
                 String.class,
                 1
         );
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        //подтвердили, что объект в репозитории не найден
         assertThat(facultyRepository.findById(facultyIn.getId())).isEmpty();
+
+        //проблема  только с проверкой статуса (500 INTERNAL_SERVER_ERROR):
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 
         //not found checking
