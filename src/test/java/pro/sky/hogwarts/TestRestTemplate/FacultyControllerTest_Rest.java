@@ -48,6 +48,7 @@ public class FacultyControllerTest_Rest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
+
     private final Faker faker = new Faker();
 
     @AfterEach
@@ -107,7 +108,7 @@ public class FacultyControllerTest_Rest {
                 String.class
         );
         assertThat(stringResponseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(stringResponseEntity.getBody()).isEqualTo("Факультет с id = " + incorrectId + " не найден!");
+        assertThat(stringResponseEntity.getBody()).isEqualTo("Faculty with id=" + incorrectId + " doesnt't exist!");
     }
 
     /*** GET_BY_ID - ***/
@@ -132,64 +133,46 @@ public class FacultyControllerTest_Rest {
                 facultyIn.getId()
         );
         assertThat(stringResponseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(stringResponseEntity.getBody()).isEqualTo("Факультет с id = " + incorrectId + " не найден!");
+        assertThat(stringResponseEntity.getBody()).isEqualTo("Faculty with id=" + incorrectId + " doesnt't exist!");
     }
 
 
-    /*** DELETE - НЕ РАБОТАЕТ (Error while extracting response for type [class pro.sky.hogwarts.entity.Faculty]
-     * and content type [application/json]) *
-
-     контроллер и сервис DELETE:
-     //        @RequestMapping("/faculties")
-     //        ...
-     //        @DeleteMapping("/{id}")
-     //        public Faculty deleteFaculty(@PathVariable("id") long id) {
-     //            return facultyService.deleteFaculty(id);
-     //        }
-     //        сервис:
-     //        public Faculty deleteFaculty(long id) {
-     //            Faculty faculty = facultyRepository.findById(id)
-     //                    .orElseThrow(() -> new FacultyNotFoundException(id));
-     //            facultyRepository.delete(faculty);
-     //            return faculty;
-     //        }
-     ***/
+    /*** DELETE - ? ***/
     @Test
-    public void deleteFacultyTest() {
-        Faculty facultyIn = new Faculty(10L, "fac-10", "green");
+    public void deleteFacultyTest1() {
+        String url = "http://localhost:" + port + "/faculties/{id}";
+        this.testRestTemplate.delete(url, 1);
+    }
+
+    @Test
+    public void deleteFacultyTest2() {
+        Faculty facultyIn = new Faculty(1L, "fac-1", "green");
         facultyRepository.save(facultyIn);
-        facultyRepository.findById(10L);
-
-        Faculty facultyOut = testRestTemplate.getForObject(
-                "http://localhost:" + port + "/faculties/" + facultyIn.getId(),
-                Faculty.class,
-                facultyIn.getId()
+        facultyRepository.findById(1L);
+        String url = "http://localhost:" + port + "/faculties/{id}";
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(
+                url,
+                HttpMethod.DELETE,
+                HttpEntity.EMPTY,
+                String.class,
+                1
         );
-        assertThat(facultyOut.getId()).isNotEqualTo(0L);
-        assertThat(facultyOut.getName()).isEqualTo(facultyIn.getName());
-        assertThat(facultyOut.getColor()).isEqualTo(facultyIn.getColor());
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(facultyRepository.findById(facultyIn.getId())).isEmpty();
 
-
-//        ResponseEntity<Faculty> responseEntity2 = testRestTemplate.exchange(
-//                "http://localhost:" + port + "/faculties/" + facultyIn.getId(),
-//                HttpMethod.DELETE,
-//                HttpEntity.EMPTY,
-//                Faculty.class
-//        );
-//        assertThat(responseEntity2.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        assertThat(facultyRepository.findById(facultyIn.getId())).isEmpty();
 
         //not found checking
         long incorrectId = facultyIn.getId() + 1;
         ResponseEntity<String> stringResponseEntity = testRestTemplate.exchange(
                 "http://localhost:" + port + "/faculties/" + incorrectId,
-                HttpMethod.PUT,
+                HttpMethod.GET,
                 new HttpEntity<>(facultyIn),
                 String.class
         );
         assertThat(stringResponseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(stringResponseEntity.getBody()).isEqualTo("Факультет с id = " + incorrectId + " не найден!");
+        assertThat(stringResponseEntity.getBody()).isEqualTo("Faculty with id=" + incorrectId + " doesnt't exist!");
     }
+
 
     /*** FIND_ALL_OR_BY_COLOR - OK ***/
     @Test
